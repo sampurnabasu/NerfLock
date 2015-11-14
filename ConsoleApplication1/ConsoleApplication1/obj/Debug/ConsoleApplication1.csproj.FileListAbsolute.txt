@@ -6,3 +6,11 @@ c:\users\sampurna\documents\visual studio 2015\Projects\ConsoleApplication1\Cons
 c:\users\sampurna\documents\visual studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
 C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Sampurna\Documents\Visual Studio 2015\Projects\NerfLock\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
