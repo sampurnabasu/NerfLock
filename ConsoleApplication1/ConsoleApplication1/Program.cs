@@ -17,20 +17,39 @@ namespace CSHttpClientSample
 {
     public class FacialRec
     {
-        
+
 
         public FacialRec(string json)
         {
             json = @"{ ""data"" : " + json + "}";
             JObject jObject = JObject.Parse(json);
-           var results = jObject["data"];
-            foreach( var result in results)
+            var results = jObject["data"];
+            foreach (var result in results)
             {
                 faceId = (string)result["faceId"];
             }
         }
 
         public string faceId { get; set; }
+    }
+
+    public class Report {
+
+        public bool match { get; set; }
+        public int confidence { get; set; }
+
+        public Report(string json)
+        {
+            json = @"{ ""data"" : " + json + "}";
+            JObject jObject = JObject.Parse(json);
+            var results = jObject["data"];
+            foreach (var result in results)
+            {
+                match = (bool)result["match"];
+                confidence = (int)result["confidence"];
+
+            }
+        }
     }
 
     public partial class Program
@@ -50,21 +69,15 @@ namespace CSHttpClientSample
             };
             
             client = new FirebaseClient(config);
-            setValue();
             Debug.WriteLine("Hell");
             getValue();
 
             
-            //working();
+            working();
         }
 
-        private static async void setValue()
-        {
-            SetResponse response = await client.SetAsync("god", 4);
 
-        }
-
-        public static async void working()
+        public async void working()
         {
             while (true)
             {
@@ -94,11 +107,17 @@ namespace CSHttpClientSample
                             Console.WriteLine("Timed out.");
 
                         check = args.Data;
-
                     }
 
                 });
             }
+        }
+
+        public async void MakeRequest3(string json)
+        {
+            Report report = new Report(json);
+            FirebaseResponse response = await client.UpdateAsync("reports", report);
+
         }
 
         public static async void getValue()
@@ -116,7 +135,7 @@ namespace CSHttpClientSample
             
         }
 
-        static async void MakeRequest(int image, String url)
+        async void MakeRequest(int image, String url)
         {
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -163,7 +182,7 @@ namespace CSHttpClientSample
             }
 
         }
-        static async void MakeRequest2()
+         async void MakeRequest2()
         {
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -198,6 +217,7 @@ namespace CSHttpClientSample
                 String JSON = await response.Content.ReadAsStringAsync();
                 //Console.WriteLine(JSON);
                 //Debug.WriteLine(JSON);
+               // MakeRequest3(JSON);
             }
 
         }
