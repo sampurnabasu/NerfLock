@@ -38,7 +38,13 @@ namespace NerfLockWindowsApp
             var results = jObject["data"];
             foreach (var result in results)
             {
-                faceId = (string)result["faceId"];
+                Debug.WriteLine(result);
+                try {
+                    faceId = (string)result["faceId"];
+                } catch (Exception e)
+                {
+                    Debug.WriteLine("No faceID");
+                }
             }
         }
 
@@ -55,8 +61,13 @@ namespace NerfLockWindowsApp
             json = @"{ ""data"" : " + json + "}";
             JObject jObject = JObject.Parse(json);
             var results = jObject["data"];
-            match = (string) results["isIdentical"];
-            confidence = (string) results["confidence"];           
+            try {
+                match = (string)results["isIdentical"];
+                confidence = (string)results["confidence"];
+            } catch(Exception e)
+            {
+                Debug.WriteLine("No match or confidence");
+            }          
         }
 
 
@@ -94,17 +105,21 @@ namespace NerfLockWindowsApp
             {
                 FirebaseResponse response = await client.GetAsync("screenshot");
                 String value = response.ResultAs<string>();
-                Debug.WriteLine(value);
 
-                    if (check != null && check.ToLower() != value.ToLower())
+                    if (value.ToLower().Equals("true"))
                     {
-                        Task taskA = Task.Factory.StartNew(() => MakeRequest(0, "https://foreveralone.blob.core.windows.net/picture/myblog.jpg"));
+                        FirebaseResponse countresp = await client.GetAsync("count");
+                        string count = countresp.ResultAs<string>();
+                        count = (Int32.Parse(count) - 1).ToString();
+                        SetResponse response2 = await client.SetAsync("screenshot", "False");
+                        Debug.WriteLine("https://foreveralone.blob.core.windows.net/picture/" + count + ".jpg");
+                        Task taskA = Task.Factory.StartNew(() => MakeRequest(0, "https://foreveralone.blob.core.windows.net/picture/" + count + ".jpg"));
                         taskA.Wait();
                         Console.WriteLine("taskA has completed.");
                         int time = 1000;
                         Thread.Sleep(time);
 
-                        Task taskB = Task.Factory.StartNew(() => MakeRequest(1, "https://scontent-lax3-1.xx.fbcdn.net/hphotos-xpf1/t31.0-8/882115_161761973982107_1639044371_o.jpg"));
+                        Task taskB = Task.Factory.StartNew(() => MakeRequest(1, "https://foreveralone.blob.core.windows.net/picture/ben2.jpg"));
                         taskB.Wait();
                         Console.WriteLine("taskB has completed.");
 
@@ -226,10 +241,27 @@ namespace NerfLockWindowsApp
         public async void MakeRequest3(String json)
         {
             Report report = new Report(json);
-            Debug.WriteLine(report.match + " " + report.confidence);         
-            SetResponse response = await client.SetAsync("match", report.match );
-            SetResponse response1 = await client.SetAsync("confidence", report.confidence);
+            Debug.WriteLine("CHecking report: " + report.match + " " + report.confidence);
+            try {
+                if (report.match.ToLower().Equals("true")) {
+                    SetResponse responseDoor = await client.SetAsync("door", "True");
+                }
+                else
+                {
+                    SetResponse response0 = await client.SetAsync("door", "False");
+                }
 
+                SetResponse response = await client.SetAsync("match", report.match);
+                SetResponse response1 = await client.SetAsync("confidence", report.confidence);
+
+                SetResponse respone2 = await client.SetAsync("ready", "True");
+                Thread.Sleep(7000);
+                SetResponse respone3 = await client.SetAsync("ready", "False");
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("Invalid Face");
+            }
             //FirebaseResponse response = await client.UpdateAsync(key, value);
 
         }
