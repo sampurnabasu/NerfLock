@@ -8,11 +8,17 @@ using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using FireSharp.Interfaces;
+using FireSharp.Config;
+using FireSharp;
+using FireSharp.Response;
 
 namespace CSHttpClientSample
 {
     public class FacialRec
     {
+        
+
         public FacialRec(string json)
         {
             json = @"{ ""data"" : " + json + "}";
@@ -26,34 +32,88 @@ namespace CSHttpClientSample
 
         public string faceId { get; set; }
     }
-   
-    static class Program
+
+    public partial class Program
     {
         private static string s1;
         private static string s2;
+        private static IFirebaseConfig config;
+        private static IFirebaseClient client;
+        private static string check;
 
         static void Main()
         {
-            Task taskA = Task.Factory.StartNew(() => MakeRequest(0, "http://diabetesinsider.com/wp-content/uploads/2014/11/bill-gates-1024x688.jpg"));
-            taskA.Wait();
-            Console.WriteLine("taskA has completed.");
-            int time = 350;
-            Thread.Sleep(time);
+            config = new FirebaseConfig
+            {
+                AuthSecret = "5mEJmENtkosiLf6Dd37yjc4RKXxONSsRuiNWKRJV",
+                BasePath = "https://foreveralone.firebaseio.com/"
+            };
+            
+            client = new FirebaseClient(config);
+            setValue();
+            Debug.WriteLine("Hell");
+            getValue();
 
-            Task taskB = Task.Factory.StartNew(() => MakeRequest(1, "http://thefilmstage.com/wp-content/uploads/2011/10/SteveJobsBook.jpg"));
-            taskB.Wait();
-            Console.WriteLine("taskB has completed.");
+            
+            //working();
+        }
 
-            Thread.Sleep(time);
+        private static async void setValue()
+        {
+            SetResponse response = await client.SetAsync("god", 4);
 
-            if (taskB.IsCompleted && taskA.IsCompleted)
-                MakeRequest2();
-            else
-                Console.WriteLine("Timed out.");
+        }
 
-           
-            Console.WriteLine("Hit ENTER to exit...");
-            Console.ReadLine();
+        public static async void working()
+        {
+            while (true)
+            {
+
+
+                EventStreamResponse response = await client.OnAsync("screenshot", (sender, args) =>
+                {
+                    System.Console.WriteLine(args.Data);
+
+                    if (check.ToLower() != args.Data.ToLower())
+                    {
+                        Task taskA = Task.Factory.StartNew(() => MakeRequest(0, "https://foreveralone.blob.core.windows.net/picture/myblog.jpg"));
+                        taskA.Wait();
+                        Console.WriteLine("taskA has completed.");
+                        int time = 1000;
+                        Thread.Sleep(time);
+
+                        Task taskB = Task.Factory.StartNew(() => MakeRequest(1, "https://scontent-lax3-1.xx.fbcdn.net/hphotos-xpf1/t31.0-8/882115_161761973982107_1639044371_o.jpg"));
+                        taskB.Wait();
+                        Console.WriteLine("taskB has completed.");
+
+                        Thread.Sleep(time);
+
+                        if (taskB.IsCompleted && taskA.IsCompleted)
+                            MakeRequest2();
+                        else
+                            Console.WriteLine("Timed out.");
+
+                        check = args.Data;
+
+                    }
+
+                });
+            }
+        }
+
+        public static async void getValue()
+        {
+            while (true)
+            {
+                FirebaseResponse response = await client.GetAsync("screenshot");
+
+                string ben = response.ResultAs<string>();
+                Debug.WriteLine("WTF: " + ben);
+                check = ben;
+                
+            }
+            
+            
         }
 
         static async void MakeRequest(int image, String url)
@@ -126,7 +186,7 @@ namespace CSHttpClientSample
                     "\"faceId1\":" + "\"" + s1 + "\"" + "," +
                     "\"faceId2\":" + "\"" + s2 + "\"" +
                             "}";
-            Console.WriteLine(build);
+            //Console.WriteLine(build);
 
             // Request body
             byte[] byteData = Encoding.UTF8.GetBytes(build);
@@ -136,8 +196,8 @@ namespace CSHttpClientSample
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 response = await client.PostAsync(uri, content);
                 String JSON = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(JSON);
-                Debug.WriteLine(JSON);
+                //Console.WriteLine(JSON);
+                //Debug.WriteLine(JSON);
             }
 
         }
