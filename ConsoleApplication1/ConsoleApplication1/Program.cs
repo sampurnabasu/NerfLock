@@ -37,10 +37,14 @@ namespace CSHttpClientSample
             Task taskA = Task.Factory.StartNew(() => MakeRequest(0, "http://diabetesinsider.com/wp-content/uploads/2014/11/bill-gates-1024x688.jpg"));
             taskA.Wait();
             Console.WriteLine("taskA has completed.");
+            int time = 350;
+            Thread.Sleep(time);
 
             Task taskB = Task.Factory.StartNew(() => MakeRequest(1, "http://thefilmstage.com/wp-content/uploads/2011/10/SteveJobsBook.jpg"));
             taskB.Wait();
             Console.WriteLine("taskB has completed.");
+
+            Thread.Sleep(time);
 
             if (taskB.IsCompleted && taskA.IsCompleted)
                 MakeRequest2();
